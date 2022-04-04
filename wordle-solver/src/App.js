@@ -1,18 +1,15 @@
 import './App.css';
 import styled from 'styled-components';
-import Game from './components/game.js';
+import {Title, Header} from './components/typography';
+import Game from './components/game';
 
-const Title = styled.h1`
-  font-family: "nyt-karnak";
-  font-weight: 700;
-`;
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      <Header>
         <Title>WordleSolver</Title>
-      </header>
+      </Header>
       <main>
         <Game />
       </main>
