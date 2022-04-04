@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components'
 
-export const Title = styled.h1`
-  font-family: "nyt-karnak";
-  font-weight: 700;
+export const Title = styled.h2`
+  font-family: system-ui;
+  font-weight: 800;
+  margin: 16px;
 `;
 
 export const Header = styled.header`
@@ -11,6 +12,8 @@ export const Header = styled.header`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-bottom: 2px solid #D3D6DA;
   font-size: calc(10px + 2vmin);
   color: black;
+  margin-bottom: 16px;
 `;
