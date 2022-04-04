@@ -1,7 +1,6 @@
 import './App.css';
-import styled from 'styled-components';
 import { Title, Header } from './components/typography';
-import Game from './components/game';
+import Game from './components/Game';
 
 function App() {
   return (
