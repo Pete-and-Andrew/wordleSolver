@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from "./theme";
+import { suggestWord } from '../util/service';
 import Block from "./Block";
 import { useKeyPress } from '../util/hook';
 
@@ -26,9 +27,8 @@ const Blockrow = ({ word, active }) => {
 
   if (active) {
     if (enterKeyPress === true) {
-      console.log('Enter key pressed!');
-      // build object here
-      // state is passed
+      console.log('active row state:', rowAnswer);
+      suggestWord(rowAnswer);
     }
   }
 
@@ -42,7 +42,6 @@ const Blockrow = ({ word, active }) => {
         }
         return obj
       })
-    console.log(rowAnswerState)
     setRowAnswer(rowAnswerState)
   }
 
