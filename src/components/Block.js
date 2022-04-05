@@ -16,16 +16,24 @@ const StyledBlock = styled.div`
     text-transform: uppercase;
 `;
 
+function BlockState(letter, value) {
+  this.letter = letter;
+  this.value = value;
+}
+
 const Block = ({ children, active, onChange }) => {
   const [blockColor, setBlockColor] = useState('#FFF');
   const pickColor = () => {
     switch(blockColor) {
       case '#FFF':
-        onChange({children: 1})
+        onChange(new BlockState(children, 1))
         return '#C9B458'
       case '#C9B458':
-        onChange({children: 2})
+        onChange(new BlockState(children, 2))
         return '#74AA64'
+      case '#74AA64':
+        onChange(new BlockState(children, 0))
+        return '#FFF'
       default:
         return '#FFF'
     }

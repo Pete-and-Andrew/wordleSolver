@@ -15,7 +15,7 @@ const Blockrow = ({ word, active }) => {
     
     const wordArray = word.split('')
     const defaultRowAnswer = wordArray.map((letter) => {
-      return {letter: 0}
+      return {[letter]: 0}
     })
     setRowAnswer(defaultRowAnswer)
   }, [])
@@ -32,9 +32,18 @@ const Blockrow = ({ word, active }) => {
     }
   }
 
-  const onChange = (value) => {
+  const onChange = (blockState) => {
     // merge value from Block component into rowAnswer
-    console.log(value)
+    const { letter, value } = blockState
+
+    const rowAnswerState = rowAnswer.map((obj) => {
+        if (obj.hasOwnProperty(letter)) {
+          obj[letter] = value;
+        }
+        return obj
+      })
+    console.log(rowAnswerState)
+    setRowAnswer(rowAnswerState)
   }
 
   if (!word) {
