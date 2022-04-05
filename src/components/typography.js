@@ -6,6 +6,12 @@ export const Title = styled.h2`
   margin: 16px;
 `;
 
+export const SubmitButton = styled.button`
+  display: flex;
+  width: 100%;
+  background: red;
+`
+
 export const Header = styled.header`
   display: flex;
   flex-direction: column;

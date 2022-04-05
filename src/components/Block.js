@@ -16,20 +16,23 @@ const StyledBlock = styled.div`
     text-transform: uppercase;
 `;
 
-const Block = ({ children }) => {
+const Block = ({ children, active, onChange }) => {
   const [blockColor, setBlockColor] = useState('#FFF');
   const pickColor = () => {
     switch(blockColor) {
       case '#FFF':
-        return '#74AA64'
-      case '#74AA64':
+        onChange({children: 1})
         return '#C9B458'
+      case '#C9B458':
+        onChange({children: 2})
+        return '#74AA64'
       default:
         return '#FFF'
     }
   }
+
     return (
-      <StyledBlock onClick={() => setBlockColor(pickColor)} blockColor={blockColor}>{children}</StyledBlock>
+      <StyledBlock onClick={() => active ? setBlockColor(pickColor) : null } blockColor={blockColor}>{children}</StyledBlock>
     )
 }
 
