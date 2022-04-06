@@ -7,14 +7,16 @@ import wordlist from "../wordList.txt"
 //    s: 2 t: 0 e: 0 a: 1 k: 0
 // }
 
-export const suggestWord = async (rowAnswer) => {
-  const wordList = await fetch(wordlist)
+export async function fetchWordList() {
+  try {
+    const response = await fetch(wordlist)
     .then(res => res.text())
     .then(text => {
-      return text
+      const wordList = text.replace(/(\r\n|\n|\r)/gm, "");
+      return wordList
     });
-    console.log(rowAnswer)
-    
-  // temp word suggestion
-  return 'butch'
+    return response.split(',')
+  } catch(error) {
+    throw new Error(`${error}`)
+  }
 }

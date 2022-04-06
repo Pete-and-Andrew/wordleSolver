@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { theme } from "./theme";
 import { suggestWord } from '../util/service';
 import Block from "./Block";
-import { useKeyPress } from '../util/hook';
 
 const Row = styled.div`
     display: flex;
@@ -13,7 +12,6 @@ const Row = styled.div`
 const Blockrow = ({ word, active }) => {
   useEffect(() => {
     if (!word) return
-    
     const wordArray = word.split('')
     const defaultRowAnswer = wordArray.map((letter) => {
       return {[letter]: 0}
@@ -22,15 +20,6 @@ const Blockrow = ({ word, active }) => {
   }, [])
   
   const [rowAnswer, setRowAnswer] = useState([{s: 0}, {t: 0}, {e: 0}, {a: 0}, {k: 0}]);
-  
-  const enterKeyPress = useKeyPress('Enter')
-
-  if (active) {
-    if (enterKeyPress === true) {
-      console.log('active row state:', rowAnswer);
-      suggestWord(rowAnswer);
-    }
-  }
 
   const onChange = (blockState) => {
     // merge value from Block component into rowAnswer
