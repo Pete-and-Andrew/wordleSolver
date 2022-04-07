@@ -22,3 +22,13 @@ export const Header = styled.header`
   color: black;
   margin-bottom: 16px;
 `;
+
+export const Gameshell = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+export const Footer = styled.div`
+  margin-top: 32px;
+`

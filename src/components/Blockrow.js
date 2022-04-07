@@ -19,6 +19,7 @@ const Blockrow = ({ word, active }) => {
     setRowAnswer(defaultRowAnswer)
   }, [])
   
+  // needs to be moved up to Game component
   const [rowAnswer, setRowAnswer] = useState([{s: 0}, {t: 0}, {e: 0}, {a: 0}, {k: 0}]);
 
   const onChange = (blockState) => {
@@ -44,12 +45,10 @@ const Blockrow = ({ word, active }) => {
       </Row>
   }
 
-  const wordArray = word.split('');
-
   return (
       <Row>
-        {wordArray.map((letter) => {
-          return <Block active onChange={onChange} key={letter}>{letter}</Block>
+        {word.split('').map((letter) => {
+          return <Block active onChange={onChange}>{letter}</Block>
         })}
       </Row>
     )
