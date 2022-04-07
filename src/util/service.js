@@ -1,4 +1,4 @@
-import wordlist from "../wordList.txt"
+import wordlist from "../wordList.js"
 
 // Shape of BlockRow
 // Key is letter

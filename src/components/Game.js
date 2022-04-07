@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Blockrow from './Blockrow';
-import wordlist from '../wordList.txt'
-// import { fetchWordList } from "../util/service"
+import wholeWordList from '../wordList.js'
 
 const Gameshell = styled.div`
   display: flex;
@@ -26,38 +25,21 @@ const Game = () => {
   let rowAnswer = null; 
   const [wordList, setWordList] = useState(null)
   const [activeBlockRowAnswer, setActiveBlockRowAnswer] = useState('steak');
-
-  useEffect(async () => {
-    async function fetchData() {
-      await fetch(wordlist)
-        .then(res => res.text())
-        .then(text => {
-          return text.replace(/(\r\n|\n|\r)/gm, "");
-        });
-    }
-    const response = fetchData();
-
-    setWordList(response)
+  
+  useEffect(() => {
     window.addEventListener("keydown", downHandler);
+    setWordList(wholeWordList)
     
     // Remove event listeners on cleanup
     return () => {
       window.removeEventListener("keydown", downHandler);
     };
-  }, [wordlist]); // Empty array ensures that effect is only run on mount and unmount
+  }, [wordList]); // Empty array ensures that effect is only run on mount and unmount
   
   function downHandler({ key }) {
     if (key === 'Enter') {
-      console.log('wordList', wordList)
-      // if (wordList === null) {
-      
-      // } else {
-
-      // }
-
-
+      console.log(wordList)
       // const randomElement = wordList[Math.floor(Math.random() * wordList.length)];
-      // console.log(randomElement)
       // setActiveBlockRowAnswer(randomElement);
     }
   }
