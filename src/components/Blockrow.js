@@ -9,7 +9,7 @@ const Row = styled.div`
     justify-content: center;
 `
 
-const Blockrow = ({ word, active }) => {
+const Blockrow = ({ word, active, onChange, setRowAnswer }) => {
   useEffect(() => {
     if (!word) return
     const wordArray = word.split('')
@@ -19,22 +19,6 @@ const Blockrow = ({ word, active }) => {
     setRowAnswer(defaultRowAnswer)
   }, [])
   
-  // needs to be moved up to Game component
-  const [rowAnswer, setRowAnswer] = useState([{s: 0}, {t: 0}, {e: 0}, {a: 0}, {k: 0}]);
-
-  const onChange = (blockState) => {
-    // merge value from Block component into rowAnswer
-    const { letter, value } = blockState
-
-    const rowAnswerState = rowAnswer.map((obj) => {
-        if (obj.hasOwnProperty(letter)) {
-          obj[letter] = value;
-        }
-        return obj
-      })
-    setRowAnswer(rowAnswerState)
-  }
-
   if (!word) {
     return <Row>
         <Block />
