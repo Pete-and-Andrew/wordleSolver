@@ -1,5 +1,3 @@
-import wordlist from "../wordList.js"
-
 // Shape of BlockRow
 // Key is letter
 // Value is green/yellow/grey
@@ -41,17 +39,3 @@ export const defaultRowAnswers = [
     answerKey: []
   }
 ]
-
-export async function fetchWordList() {
-  try {
-    const response = await fetch(wordlist)
-    .then(res => res.text())
-    .then(text => {
-      const wordList = text.replace(/(\r\n|\n|\r)/gm, "");
-      return wordList
-    });
-    return response.split(',')
-  } catch(error) {
-    throw new Error(`${error}`)
-  }
-}
