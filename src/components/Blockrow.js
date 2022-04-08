@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from "./theme";
-import { suggestWord } from '../util/service';
 import Block from "./Block";
 
 const Row = styled.div`
@@ -9,16 +8,7 @@ const Row = styled.div`
     justify-content: center;
 `
 
-const Blockrow = ({ word, active, onChange, setRowAnswer }) => {
-  useEffect(() => {
-    if (!word) return
-    const wordArray = word.split('')
-    const defaultRowAnswer = wordArray.map((letter) => {
-      return {[letter]: 0}
-    })
-    setRowAnswer(defaultRowAnswer)
-  }, [])
-  
+const Blockrow = ({ word, active, onChange, setRowAnswer }) => { 
   if (!word) {
     return <Row>
         <Block />
@@ -32,7 +22,7 @@ const Blockrow = ({ word, active, onChange, setRowAnswer }) => {
   return (
       <Row>
         {word.split('').map((letter) => {
-          return <Block active onChange={onChange}>{letter}</Block>
+          return <Block key={letter} active onChange={active ? onChange : null}>{letter}</Block>
         })}
       </Row>
     )
