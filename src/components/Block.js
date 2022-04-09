@@ -21,8 +21,8 @@ function BlockState(letter, value) {
   this.value = value;
 }
 
-const Block = ({ children, active, onChange }) => {
-  const [blockColor, setBlockColor] = useState('#FFF');
+const Block = ({ children, active, onChange, isSolved }) => {
+  const [blockColor, setBlockColor] = useState(isSolved ? '#74AA64' : '#FFF');
   const pickColor = () => {
     switch(blockColor) {
       case '#FFF':
@@ -39,9 +39,16 @@ const Block = ({ children, active, onChange }) => {
     }
   }
 
+  if (active){ 
     return (
       <StyledBlock onClick={() => active ? setBlockColor(pickColor) : null } blockColor={blockColor}>{children}</StyledBlock>
     )
+  } else { 
+    return (
+      <StyledBlock blockColor={blockColor}>{children}</StyledBlock>
+    )
+  }
+    
 }
 
 

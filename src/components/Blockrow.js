@@ -8,7 +8,7 @@ const Row = styled.div`
     justify-content: center;
 `
 
-const Blockrow = ({ word, active, onChange, setRowAnswer }) => { 
+const Blockrow = ({ word, active, onChange, solvedColumns }) => { 
   if (!word) {
     return <Row>
         <Block />
@@ -21,8 +21,8 @@ const Blockrow = ({ word, active, onChange, setRowAnswer }) => {
 
   return (
       <Row>
-        {word.split('').map((letter) => {
-          return <Block key={letter} active onChange={active ? onChange : null}>{letter}</Block>
+        {word.split('').map((letter, i) => {
+          return <Block key={`${word}${i}`} isSolved={solvedColumns[i]} active={active} onChange={active ? onChange : null}>{letter}</Block>
         })}
       </Row>
     )

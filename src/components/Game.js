@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Blockrow from './Blockrow';
 import wholeWordList from '../wordList.js'
-import { reduce, filter, merge, find, hasIn, map, get, uniq} from 'lodash';
+import { reduce, filter, merge, find, hasIn, map, get, uniq, zipObject } from 'lodash';
 import { defaultRowAnswers } from '../util/service';
 import { Gameshell, Footer, SubmitButton } from "./typography"
 
@@ -10,9 +10,12 @@ const Game = () => {
   const [wordList, setWordList] = useState(null)
   const [gameIterations, setGameIterations] = useState(1)
   const [rowAnswers, setRowAnswers] = useState(defaultRowAnswers);
+  const [solvedColumns, setSolvedColumns] = useState([false, false, false, false, false])
 
   useEffect(() => {
-    setWordList(wholeWordList)
+    if (gameIterations === 1){ 
+      setWordList(wholeWordList)
+    }
   }, [wordList, gameIterations]); 
 
   const handleSubmit = (e) => {
@@ -35,7 +38,7 @@ const Game = () => {
             if (!word.includes(currentLetter)) {
               return false;
             }
-            if (splitWord[letterPosition] == currentLetter) {
+            if (splitWord[letterPosition] === currentLetter) {
               return false;
             }
             break;
@@ -44,18 +47,31 @@ const Game = () => {
             if (splitWord[letterPosition] !== currentLetter) {
               return false;
             }
+            solvedColumns[letterPosition] = true;
+
             break;
           }
       }
       return true;
     })
-    console.log('newWordList', newWordList)
 
     setGameIterations(gameIterations + 1)
 
-    rowAnswers[gameIterations].word = suggestBestGuess(newWordList);
-
+    const bestGuessWord = suggestBestGuess(newWordList);
+    setWordList(newWordList);
+    rowAnswers[gameIterations].word = bestGuessWord
+    rowAnswers[gameIterations].answerKey = createAnswerKey(bestGuessWord)
     // const updatedRowAnswers = merge(replaceWord, rowAnswers)
+  }
+
+  const createAnswerKey = (word) => { 
+    const splitWord = word.split('');
+    let newAnswer = [];
+    splitWord.forEach((letter, i) => {
+      let value = solvedColumns[i] ? 2 : 0;
+      newAnswer.push({[letter]: value});
+    })
+    return newAnswer;
   }
 
   const suggestBestGuess = (wordList) => { 
@@ -65,31 +81,31 @@ const Game = () => {
       const splitWord = word.split('');
       splitWord.forEach((letter, i) => { 
         if (letterPosValuesWrapper[i][letter]){ 
-          console.log('ding should increase')
           letterPosValuesWrapper[i][letter]++
         }else { 
           letterPosValuesWrapper[i][letter] = 1;
         }
       })
     })
-    console.log('letterPosValuesWrapper', letterPosValuesWrapper)
 
     let currentBestGuess;
     let currentBestGuessValue = 0;
 
+    if (wordList.length === 1){ 
+      setSolvedColumns([true, true, true, true, true]);
+      return wordList[0]
+    }
     wordList.forEach(word => { 
       const splitWord = word.split('');
       let value = 0;
       splitWord.forEach((letter, i) => { 
         value = value + letterPosValuesWrapper[i][letter]
       })
-      console.log('word + value', word, value)
       if (value > currentBestGuessValue) {
         currentBestGuess = word;
         currentBestGuessValue = value; 
       }
     })
-    console.log('OUR SUGGESTED GUESS IS:', currentBestGuess)
     return currentBestGuess;
   }
 
@@ -97,6 +113,7 @@ const Game = () => {
     // merge value from Block component into rowAnswer
     const { letter, value } = blockState
     let id = gameIterations - 1
+
     const foundRowAnswerKey = rowAnswers[id].answerKey
     const replaceAnswerKey = find(foundRowAnswerKey, (answerKey) => { 
       return hasIn(answerKey, letter);
@@ -112,8 +129,7 @@ const Game = () => {
             rowAnswers.map(row => {
             
               const active = gameIterations === row.id
-              console.log('ACTIVE ROW:', gameIterations, row.id, active)
-              return <Blockrow active={active} key={row.id} word={row.word} rowAnswer={row.answerKey} onChange={onChange} />
+              return <Blockrow active={active} key={row.id} word={row.word} rowAnswer={row.answerKey} solvedColumns={solvedColumns} onChange={onChange} />
             })
           }
         <Footer>
