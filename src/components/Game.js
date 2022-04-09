@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import React, { useState, useEffect } from 'react';
 import Blockrow from './Blockrow';
 import wholeWordList from '../wordList.js'
@@ -38,19 +39,18 @@ const Game = () => {
       for (let letterPosition = 0; letterPosition < 5; letterPosition++){
         const currentAnswerKey = rowAnswers[gameIterations - 1].answerKey[letterPosition];
         const currentLetter = Object.keys(currentAnswerKey)[0]
-        const splitWord = rowAnswers[gameIterations - 1].word.split('')
+        const splitWord = word.split('')
         // switch (activeRowAnswers[letterPosition]){
           switch(currentAnswerKey[currentLetter]) {
           // //Grey letter
           case 0:
-            if (!word.includes(currentLetter)){ 
-              console.log('hit!')
+            if (word.includes(currentLetter)){ 
               return false;
             }
             break;
           // //Yellow letter
           case 1:
-            if (word.includes(currentLetter)) {
+            if (!word.includes(currentLetter)) {
               return false;
             }
             if (splitWord[letterPosition] == currentLetter) {
@@ -64,8 +64,8 @@ const Game = () => {
             }
             break;
           }
-          return false
       }
+      return true;
   })
     console.log('newWordList', newWordList)
     // const filteredWordList = reduce(
