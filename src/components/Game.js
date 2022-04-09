@@ -15,24 +15,6 @@ const Game = () => {
     setWordList(wholeWordList)
   }, [wordList, gameIterations]); 
 
-  // const filterWordList = (accumulated, listWord) => {
-  //   const activeRowAnswers = rowAnswers[gameIterations - 1].answerKey
-  //   let splitWord = listWord.split('')
-  //   let firstLetter = get(activeRowAnswers[0], splitWord[0])
-  //   let secondLetter = get(activeRowAnswers[1], splitWord[1])
-  //   let thirdLetter = get(activeRowAnswers[2], splitWord[2])
-  //   let fourthLetter = get(activeRowAnswers[3], splitWord[3])
-  //   let fifthLetter = get(activeRowAnswers[4], splitWord[4])
-  
-  //   if (firstLetter === 2 && secondLetter === 2 && thirdLetter === 2) {
-  //     accumulated.push(listWord)
-  //   }
-  
-  //   // debugger;
-  
-  //   return accumulated
-  // }
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const newWordList = filter(wordList, (word) => {
@@ -66,24 +48,49 @@ const Game = () => {
           }
       }
       return true;
-  })
+    })
     console.log('newWordList', newWordList)
-    // const filteredWordList = reduce(
-    //   wordList,
-    //   (accumulated, listWord) => {
-    //     // trying to reduce 5 times, based on word length
-    //     for (let i = 0; i < 5; i++) {
-    //       accumulated = filterWordList(accumulated, listWord);
-    //     }
-    //     return uniq(accumulated)
-    //   },
-    //   []);
-    // console.log('filteredWordList', filteredWordList)  
-    // // console.log('rowAnswers:', rowAnswers)
-    // let randomElement = filteredWordList[Math.floor(Math.random() * filteredWordList.length)];
-    // const replaceWord = rowAnswers[gameIterations].word = randomElement
+
     setGameIterations(gameIterations + 1)
+
+    rowAnswers[gameIterations].word = suggestBestGuess(newWordList);
+
     // const updatedRowAnswers = merge(replaceWord, rowAnswers)
+  }
+
+  const suggestBestGuess = (wordList) => { 
+    let letterPosValuesWrapper = [{}, {}, {}, {}, {}]
+
+    wordList.forEach(word => {
+      const splitWord = word.split('');
+      splitWord.forEach((letter, i) => { 
+        if (letterPosValuesWrapper[i][letter]){ 
+          console.log('ding should increase')
+          letterPosValuesWrapper[i][letter]++
+        }else { 
+          letterPosValuesWrapper[i][letter] = 1;
+        }
+      })
+    })
+    console.log('letterPosValuesWrapper', letterPosValuesWrapper)
+
+    let currentBestGuess;
+    let currentBestGuessValue = 0;
+
+    wordList.forEach(word => { 
+      const splitWord = word.split('');
+      let value = 0;
+      splitWord.forEach((letter, i) => { 
+        value = value + letterPosValuesWrapper[i][letter]
+      })
+      console.log('word + value', word, value)
+      if (value > currentBestGuessValue) {
+        currentBestGuess = word;
+        currentBestGuessValue = value; 
+      }
+    })
+    console.log('OUR SUGGESTED GUESS IS:', currentBestGuess)
+    return currentBestGuess;
   }
 
   const onChange = (blockState) => {
@@ -103,8 +110,9 @@ const Game = () => {
         <form onSubmit={handleSubmit}>
           {
             rowAnswers.map(row => {
+            
               const active = gameIterations === row.id
-
+              console.log('ACTIVE ROW:', gameIterations, row.id, active)
               return <Blockrow active={active} key={row.id} word={row.word} rowAnswer={row.answerKey} onChange={onChange} />
             })
           }
