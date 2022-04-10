@@ -22,7 +22,7 @@ const Blockrow = ({ word, active, onChange, solvedColumns }) => {
   return (
       <Row>
         {word.split('').map((letter, i) => {
-          return <Block key={`${word}${i}`} isSolved={solvedColumns[i]} active={active} onChange={active ? onChange : null}>{letter}</Block>
+          return <Block key={`${word}${i}`} position={i} isSolved={solvedColumns[i]} active={active} onChange={active ? onChange : null}>{letter}</Block>
         })}
       </Row>
     )

@@ -1,8 +1,9 @@
 /* eslint-disable default-case */
+//TODO handle duplicate letters
 import React, { useState, useEffect } from 'react';
 import Blockrow from './Blockrow';
 import wholeWordList from '../wordList.js'
-import { reduce, filter, merge, find, hasIn, map, get, uniq, zipObject } from 'lodash';
+import { reduce, filter, merge, find, hasIn, map, get, uniq, zipObject, forEach } from 'lodash';
 import { defaultRowAnswers } from '../util/service';
 import { Gameshell, Footer, SubmitButton } from "./typography"
 
@@ -19,35 +20,56 @@ const Game = () => {
   }, [wordList, gameIterations]); 
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault();     
+    const currentAnswer = rowAnswers[gameIterations - 1].answerKey;
+
+    let duplicateLetters = {};
+    
+    currentAnswer.forEach(letterObj => { 
+      const letter = Object.keys(letterObj)[0]
+      if (duplicateLetters[letter] === 0){ 
+        duplicateLetters[letter] = 1
+      }else{ 
+        duplicateLetters[letter] = 0
+      }
+    })
     const newWordList = filter(wordList, (word) => {
       for (let letterPosition = 0; letterPosition < 5; letterPosition++){
         const currentAnswerKey = rowAnswers[gameIterations - 1].answerKey[letterPosition];
         const currentLetter = Object.keys(currentAnswerKey)[0]
         const splitWord = word.split('')
         // switch (activeRowAnswers[letterPosition]){
+
           switch(currentAnswerKey[currentLetter]) {
-          // //Grey letter
+          //Grey letter
           case 0:
-            if (word.includes(currentLetter)){ 
+            if (word.includes(currentLetter) && !duplicateLetters[currentLetter]){ 
+              //console.log(`removing ${word} because of ${currentLetter} being grey`);
               return false;
             }
             break;
           // //Yellow letter
           case 1:
             if (!word.includes(currentLetter)) {
+              //console.log(`removing ${word} because of ${currentLetter} being Yellow`);
+
               return false;
             }
             if (splitWord[letterPosition] === currentLetter) {
+              //console.log(`removing ${word} because of ${currentLetter} being Yellow`);
+
               return false;
             }
             break;
           //Green letter
           case 2:
+            solvedColumns[letterPosition] = true;
             if (splitWord[letterPosition] !== currentLetter) {
+              //console.log(`removing ${word} because of ${currentLetter} being Green`);
+
               return false;
             }
-            solvedColumns[letterPosition] = true;
+
 
             break;
           }
@@ -76,7 +98,6 @@ const Game = () => {
 
   const suggestBestGuess = (wordList) => { 
     let letterPosValuesWrapper = [{}, {}, {}, {}, {}]
-
     wordList.forEach(word => {
       const splitWord = word.split('');
       splitWord.forEach((letter, i) => { 
@@ -111,14 +132,11 @@ const Game = () => {
 
   const onChange = (blockState) => {
     // merge value from Block component into rowAnswer
-    const { letter, value } = blockState
+    const { letter, value, position } = blockState
     let id = gameIterations - 1
 
     const foundRowAnswerKey = rowAnswers[id].answerKey
-    const replaceAnswerKey = find(foundRowAnswerKey, (answerKey) => { 
-      return hasIn(answerKey, letter);
-    })
-    replaceAnswerKey[letter] = value
+    foundRowAnswerKey[position] = {[letter]: value}
   }
 
     let endCounter = gameIterations === 7
