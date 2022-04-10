@@ -7,9 +7,11 @@ export const Title = styled.h2`
 `;
 
 export const SubmitButton = styled.button`
-  display: flex;
-  width: 100%;
-  background: red;
+  width: 64px;
+  height: 32px;
+  color: white;
+  font-weight: bold;
+  background: #858585;
 `
 
 export const Header = styled.header`
@@ -22,3 +24,16 @@ export const Header = styled.header`
   color: black;
   margin-bottom: 16px;
 `;
+
+export const Gameshell = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+export const Footer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 32px;
+`

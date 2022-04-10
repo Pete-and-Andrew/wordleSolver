@@ -16,32 +16,40 @@ const StyledBlock = styled.div`
     text-transform: uppercase;
 `;
 
-function BlockState(letter, value) {
+function BlockState(letter, value, position) {
   this.letter = letter;
   this.value = value;
+  this.position = position
 }
 
-const Block = ({ children, active, onChange }) => {
-  const [blockColor, setBlockColor] = useState('#FFF');
+const Block = ({ children, active, onChange, isSolved, position }) => {
+  const [blockColor, setBlockColor] = useState(isSolved ? '#74AA64' : '#FFF');
   const pickColor = () => {
     switch(blockColor) {
       case '#FFF':
-        onChange(new BlockState(children, 1))
+        onChange(new BlockState(children, 1, position))
         return '#C9B458'
       case '#C9B458':
-        onChange(new BlockState(children, 2))
+        onChange(new BlockState(children, 2, position))
         return '#74AA64'
       case '#74AA64':
-        onChange(new BlockState(children, 0))
+        onChange(new BlockState(children, 0, position))
         return '#FFF'
       default:
         return '#FFF'
     }
   }
 
+  if (active){ 
     return (
       <StyledBlock onClick={() => active ? setBlockColor(pickColor) : null } blockColor={blockColor}>{children}</StyledBlock>
     )
+  } else { 
+    return (
+      <StyledBlock blockColor={blockColor}>{children}</StyledBlock>
+    )
+  }
+    
 }
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+// Maybe delete this
 export function useKeyPress(targetKey) {
     // State for keeping track of whether key is pressed
     const [keyPressed, setKeyPressed] = useState(false);

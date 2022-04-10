@@ -1,5 +1,3 @@
-import wordlist from "../wordList.txt"
-
 // Shape of BlockRow
 // Key is letter
 // Value is green/yellow/grey
@@ -7,14 +5,37 @@ import wordlist from "../wordList.txt"
 //    s: 2 t: 0 e: 0 a: 1 k: 0
 // }
 
-export const suggestWord = async (rowAnswer) => {
-  const wordList = await fetch(wordlist)
-    .then(res => res.text())
-    .then(text => {
-      return text
-    });
-    console.log(rowAnswer)
-    
-  // temp word suggestion
-  return 'butch'
-}
+export const defaultRowAnswers = [
+  {
+    id: 1, 
+    word: 'steak', 
+    answerKey: [
+      {s: 0}, {t: 0}, {e: 0}, {a: 0}, {k: 0}
+    ]
+  },
+  {
+    id: 2, 
+    word: '', 
+    answerKey: []
+  },
+  {
+    id: 3, 
+    word: '', 
+    answerKey: []
+  },
+  {
+    id: 4, 
+    word: '', 
+    answerKey: []
+  },
+  {
+    id: 5, 
+    word: '', 
+    answerKey: []
+  },
+  {
+    id: 6, 
+    word: '', 
+    answerKey: []
+  }
+]
