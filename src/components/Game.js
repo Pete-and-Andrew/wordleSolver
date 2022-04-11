@@ -21,6 +21,10 @@ const Game = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();     
+
+    if(wordList.length === 0) {
+      alert("No valid words left, please ensure your selected word is on the wordle solutions list and that an error hasn't been entered")
+    }
     const currentAnswer = rowAnswers[gameIterations - 1].answerKey;
 
     let duplicateLetters = {};
@@ -119,8 +123,12 @@ const Game = () => {
     wordList.forEach(word => { 
       const splitWord = word.split('');
       let value = 0;
+      let usedLetters = []
       splitWord.forEach((letter, i) => { 
-        value = value + letterPosValuesWrapper[i][letter]
+        if (!usedLetters.includes(letter)){ 
+          value = value + letterPosValuesWrapper[i][letter]
+          usedLetters.push(letter)
+        }
       })
       if (value > currentBestGuessValue) {
         currentBestGuess = word;
