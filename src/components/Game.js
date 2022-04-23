@@ -42,26 +42,27 @@ const Game = () => {
         const currentAnswerKey = rowAnswers[gameIterations - 1].answerKey[letterPosition];
         const currentLetter = Object.keys(currentAnswerKey)[0]
         const splitWord = word.split('')
-        // switch (activeRowAnswers[letterPosition]){
 
           switch(currentAnswerKey[currentLetter]) {
           //Grey letter
           case 0:
             if (word.includes(currentLetter) && !duplicateLetters[currentLetter]){ 
-              //console.log(`removing ${word} because of ${currentLetter} being grey`);
               return false;
             }
+
+            if (word.includes(currentLetter) && duplicateLetters[currentLetter]){
+              if (splitWord.filter(letter => letter === currentLetter).length > 1) {
+                return false;
+              } 
+            }
+
             break;
-          // //Yellow letter
+          //Yellow letter
           case 1:
             if (!word.includes(currentLetter)) {
-              //console.log(`removing ${word} because of ${currentLetter} being Yellow`);
-
               return false;
             }
             if (splitWord[letterPosition] === currentLetter) {
-              //console.log(`removing ${word} because of ${currentLetter} being Yellow`);
-
               return false;
             }
             break;
@@ -69,8 +70,6 @@ const Game = () => {
           case 2:
             solvedColumns[letterPosition] = true;
             if (splitWord[letterPosition] !== currentLetter) {
-              //console.log(`removing ${word} because of ${currentLetter} being Green`);
-
               return false;
             }
 
@@ -87,7 +86,6 @@ const Game = () => {
     setWordList(newWordList);
     rowAnswers[gameIterations].word = bestGuessWord
     rowAnswers[gameIterations].answerKey = createAnswerKey(bestGuessWord)
-    // const updatedRowAnswers = merge(replaceWord, rowAnswers)
   }
 
   const createAnswerKey = (word) => { 
