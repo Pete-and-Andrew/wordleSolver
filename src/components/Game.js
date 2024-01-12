@@ -2,14 +2,16 @@
 //TODO handle duplicate letters
 import React, { useState, useEffect } from 'react';
 import Blockrow from './Blockrow';
+import FirstBlockRow from "./FirstBlockRow";
 import wholeWordList from '../wordList.js'
-import { reduce, filter, merge, find, hasIn, map, get, uniq, zipObject, forEach } from 'lodash';
+import { filter } from 'lodash';
 import { defaultRowAnswers } from '../util/service';
 import { Gameshell, Footer, SubmitButton } from "./typography"
 
 const Game = () => {  
   const [wordList, setWordList] = useState(null)
-  const [gameIterations, setGameIterations] = useState(1)
+  const [currentGuess, setCurrentGuess] = useState('');
+  const [gameIterations, setGameIterations] = useState()
   const [rowAnswers, setRowAnswers] = useState(defaultRowAnswers);
   const [solvedColumns, setSolvedColumns] = useState([false, false, false, false, false])
 
@@ -22,9 +24,15 @@ const Game = () => {
   const handleSubmit = (e) => {
     e.preventDefault();     
 
+    if (currentGuess.length !== 5) {
+      alert("Please enter a five letter word")
+      return;
+    }
+
     if(wordList.length === 0) {
       alert("No valid words left, please ensure your selected word is on the wordle solutions list and that an error hasn't been entered")
     }
+    
     const currentAnswer = rowAnswers[gameIterations - 1].answerKey;
 
     let duplicateLetters = {};
@@ -84,6 +92,7 @@ const Game = () => {
 
     const bestGuessWord = suggestBestGuess(newWordList);
     setWordList(newWordList);
+    // rowAnswers[gameIterations].word = bestGuessWord
     rowAnswers[gameIterations].word = bestGuessWord
     rowAnswers[gameIterations].answerKey = createAnswerKey(bestGuessWord)
   }
@@ -148,14 +157,23 @@ const Game = () => {
     let endCounter = gameIterations === 7
     return (
       <Gameshell>
+        <FirstBlockRow guess={currentGuess} />
         <form onSubmit={handleSubmit}>
           {
             rowAnswers.map(row => {
             
               const active = gameIterations === row.id
-              return <Blockrow active={active} key={row.id} word={row.word} rowAnswer={row.answerKey} solvedColumns={solvedColumns} onChange={onChange} />
+              return <Blockrow active={active} key={row.id} word={row.word} guess={currentGuess} rowAnswer={row.answerKey} solvedColumns={solvedColumns} onChange={onChange} />
             })
           }
+          <input 
+            type="text" 
+            value={currentGuess} 
+            onChange={e => setCurrentGuess(e.target.value)} 
+            autoFocus="autofocus"
+            maxLength={5} // Limit the input to 5 characters
+            style={{opacity: 0, background: 'transparent', border: 'none'}}
+          />
         <Footer>
           {endCounter ? null : <div style={{width: '100%'}}>
             <SubmitButton type="submit">Submit</SubmitButton>
