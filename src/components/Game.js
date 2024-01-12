@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 //TODO handle duplicate letters
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Blockrow from './Blockrow';
 import FirstBlockRow from "./FirstBlockRow";
 import wholeWordList from '../wordList.js'
@@ -14,12 +14,24 @@ const Game = () => {
   const [gameIterations, setGameIterations] = useState()
   const [rowAnswers, setRowAnswers] = useState(defaultRowAnswers);
   const [solvedColumns, setSolvedColumns] = useState([false, false, false, false, false])
+  const inputRef = useRef();
 
   useEffect(() => {
     if (gameIterations === 1){ 
       setWordList(wholeWordList)
     }
-  }, [wordList, gameIterations]); 
+
+    const handleKeyDown = () => {
+      inputRef.current.focus();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+
+  }, []); 
 
   const handleSubmit = (e) => {
     e.preventDefault();     
@@ -167,6 +179,7 @@ const Game = () => {
             })
           }
           <input 
+            ref={inputRef}
             type="text" 
             value={currentGuess} 
             onChange={e => setCurrentGuess(e.target.value)} 
