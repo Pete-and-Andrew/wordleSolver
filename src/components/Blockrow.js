@@ -21,8 +21,8 @@ const Blockrow = ({ word, active, guess, onChange, solvedColumns }) => {
 
   return (
       <Row>
-        {guess.split('').map((letter, i) => {
-          return <Block key={`${guess}${i}`} position={i} isSolved={solvedColumns[i]} active={active} onChange={active ? onChange : null}>{letter}</Block>
+        {word.split('').map((letter, i) => {
+          return <Block key={`${word}${i}`} position={i} isSolved={solvedColumns[i]} active={active} onChange={active ? onChange : null}>{letter}</Block>
         })}
       </Row>
     )

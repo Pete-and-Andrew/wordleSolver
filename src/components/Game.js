@@ -11,7 +11,8 @@ import { Gameshell, Footer, SubmitButton } from "./typography"
 const Game = () => {  
   const [wordList, setWordList] = useState(null)
   const [currentGuess, setCurrentGuess] = useState('');
-  const [gameIterations, setGameIterations] = useState()
+  const [currentGuessRow, setCurrentGuessRow] = useState(defaultRowAnswers)
+  const [gameIterations, setGameIterations] = useState(1)
   const [rowAnswers, setRowAnswers] = useState(defaultRowAnswers);
   const [solvedColumns, setSolvedColumns] = useState([false, false, false, false, false])
   const inputRef = useRef();
@@ -44,11 +45,15 @@ const Game = () => {
     if(wordList.length === 0) {
       alert("No valid words left, please ensure your selected word is on the wordle solutions list and that an error hasn't been entered")
     }
-    
-    const currentAnswer = rowAnswers[gameIterations - 1].answerKey;
+
+    if (gameIterations === 1) {
+      currentGuessRow[0].word = currentGuess;
+      currentGuessRow[0].answerKey = createAnswerKey(currentGuess);
+    }
+
+    const currentAnswer = gameIterations === 1 ? currentGuessRow[0].answerKey : rowAnswers[gameIterations - 1].answerKey;
 
     let duplicateLetters = {};
-    
     currentAnswer.forEach(letterObj => { 
       const letter = Object.keys(letterObj)[0]
       if (duplicateLetters[letter] === 0){ 
@@ -64,7 +69,7 @@ const Game = () => {
         const splitWord = word.split('')
 
           switch(currentAnswerKey[currentLetter]) {
-          //Grey letter
+          // Grey letter
           case 0:
             if (word.includes(currentLetter) && !duplicateLetters[currentLetter]){ 
               return false;
@@ -77,7 +82,7 @@ const Game = () => {
             }
 
             break;
-          //Yellow letter
+          // Yellow letter
           case 1:
             if (!word.includes(currentLetter)) {
               return false;
@@ -86,13 +91,12 @@ const Game = () => {
               return false;
             }
             break;
-          //Green letter
+          // Green letter
           case 2:
             solvedColumns[letterPosition] = true;
             if (splitWord[letterPosition] !== currentLetter) {
               return false;
             }
-
 
             break;
           }
@@ -104,9 +108,17 @@ const Game = () => {
 
     const bestGuessWord = suggestBestGuess(newWordList);
     setWordList(newWordList);
-    // rowAnswers[gameIterations].word = bestGuessWord
-    rowAnswers[gameIterations].word = bestGuessWord
-    rowAnswers[gameIterations].answerKey = createAnswerKey(bestGuessWord)
+  
+    // Create a new copy of rowAnswers
+    let newRowAnswers = [...rowAnswers];
+    // Update the word and answerKey for the current iteration
+    newRowAnswers[gameIterations] = {
+      ...newRowAnswers[gameIterations],
+      word: bestGuessWord,
+      answerKey: createAnswerKey(bestGuessWord)
+    };
+    // Set the state with the new copy
+    setRowAnswers(newRowAnswers);
   }
 
   const createAnswerKey = (word) => { 
@@ -116,6 +128,12 @@ const Game = () => {
       let value = solvedColumns[i] ? 2 : 0;
       newAnswer.push({[letter]: value});
     })
+    if (gameIterations === 1) {
+      newAnswer = newAnswer.map((item, index) => {
+        return currentGuessRow[gameIterations - 1].answerKey[index] ? {...currentGuessRow[0].answerKey[index]} : item;
+      });
+    }
+    
     return newAnswer;
   }
 
@@ -132,8 +150,8 @@ const Game = () => {
       })
     })
 
-    let currentBestGuess;
-    let currentBestGuessValue = 0;
+    let suggestedBestGuess;
+    let suggestedBestGuessValue = 0;
 
     if (wordList.length === 1){ 
       setSolvedColumns([true, true, true, true, true]);
@@ -149,31 +167,38 @@ const Game = () => {
           usedLetters.push(letter)
         }
       })
-      if (value > currentBestGuessValue) {
-        currentBestGuess = word;
-        currentBestGuessValue = value; 
+      if (value > suggestedBestGuessValue) {
+        suggestedBestGuess = word;
+        suggestedBestGuessValue = value; 
       }
     })
-    return currentBestGuess;
+    return suggestedBestGuess;
   }
-
+  
   const onChange = (blockState) => {
     // merge value from Block component into rowAnswer
     const { letter, value, position } = blockState
     let id = gameIterations - 1
-
-    const foundRowAnswerKey = rowAnswers[id].answerKey
-    foundRowAnswerKey[position] = {[letter]: value}
+    
+    if (gameIterations === 1) {
+      const foundCurrentRowAnswerKey = currentGuessRow[id].answerKey
+      foundCurrentRowAnswerKey[position] = {[letter]: value}
+    } else {
+      const foundRowAnswerKey = rowAnswers[id].answerKey
+      foundRowAnswerKey[position] = {[letter]: value}
+    }
   }
 
     let endCounter = gameIterations === 7
     return (
       <Gameshell>
-        <FirstBlockRow guess={currentGuess} />
+        <FirstBlockRow guess={currentGuess} active={gameIterations === 1} onChange={onChange} />
         <form onSubmit={handleSubmit}>
           {
-            rowAnswers.map(row => {
-            
+            rowAnswers.map((row, index) => {
+              if (index === 0) {
+                return null;
+              }
               const active = gameIterations === row.id
               return <Blockrow active={active} key={row.id} word={row.word} guess={currentGuess} rowAnswer={row.answerKey} solvedColumns={solvedColumns} onChange={onChange} />
             })
